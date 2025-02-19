@@ -1,4 +1,4 @@
-import React from "react";
+import { expect } from "@storybook/test";
 import { Meta } from "@storybook/react";
 import LoginPage from "../pages/LoginPage";
 import { BrowserRouter } from "react-router-dom";
@@ -50,9 +50,8 @@ FailState.play = async ({ canvasElement }: { canvasElement: HTMLElement }) => {
   const passwordInput = canvas.getByPlaceholderText("Enter your password");
   const loginButton = canvas.getByTestId("login-button");
 
-  await userEvent.type(emailInput, 'testforfail.com');
+  await userEvent.type(emailInput, 'testforfail@gmail.com');
   await userEvent.type(passwordInput, 'thereisno@sign');
   await userEvent.click(loginButton);
-
-  await expect(canvas.getByText('Invalid credentials')).toBeInTheDocument();
+  await expect(canvas.getByText("Please match the requested format")).toBeInTheDocument();
 };
