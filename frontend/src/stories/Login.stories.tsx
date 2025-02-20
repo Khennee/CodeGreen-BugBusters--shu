@@ -2,8 +2,8 @@ import { expect } from "@storybook/test";
 import { Meta } from "@storybook/react";
 import LoginPage from "../pages/LoginPage";
 import { BrowserRouter } from "react-router-dom";
-import { userEvent, within } from '@storybook/testing-library';
-//ayawan ko debug men HAAHHAHA
+import { userEvent, within, screen, waitFor } from '@storybook/testing-library';
+
 export default {
   title: "Pages/LoginPage",
   component: LoginPage,
@@ -38,6 +38,10 @@ SuccessState.play = async ({ canvasElement }: { canvasElement: HTMLElement }) =>
   await userEvent.type(emailInput, 'testforsuccess@gmail.com');
   await userEvent.type(passwordInput, 'success');
   await userEvent.click(loginButton);
+
+  await waitFor(() => {
+    expect(screen.getByText(/login successful/i)).toBeInTheDocument();
+  });
 
   await expect(loginButton).toBeEnabled();
 };
