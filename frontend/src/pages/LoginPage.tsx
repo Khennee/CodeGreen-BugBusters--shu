@@ -8,13 +8,24 @@ import LandingPageHeader from "../components/LandingPageHeader";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(""); // Error state
+
   const { loading, submitLogin } = useLogin();
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    await submitLogin({ email, password });
+    setError(""); // Clear previous errors
+
+    try {
+      await submitLogin({ email, password }); // Attempt login
+
+      // If no error occurs, navigate to dashboard
+      navigate("/dashboard");
+    } catch (err) {
+      setError("Something went wrong, Please Try Again."); // Show error message
+    }
   };
 
   const handleSignUpButton = () => {
@@ -60,11 +71,10 @@ const LoginPage = () => {
                 }}
                 className="bg-secondgrey font-syke-regular w-full mt-1 px-4 py-2 focus:shadow-inner border-none focus:outline-none focus:ring-1 focus:ring-textgreen text-white placeholder-white rounded-sm lg:text-sm md:text-xs text-xxs"
                 placeholder="Email address"
-                pattern="[\-a-zA-Z0-9~!$%^&amp;*_=+\}\{'?]+(\.[\-a-zA-Z0-9~!$%^&amp;*_=+\}\{'?]+)*@[a-zA-Z0-9_][\-a-zA-Z0-9_]*(\.[\-a-zA-Z0-9_]+)*\.[cC][oO][mM](:[0-9]{1,5})?"
                 required
               />
             </div>
-            
+
             <div className="flex items-center bg-secondgrey font-syke-regular w-full mt-1 px-4 py-2 focus:shadow-inner border-none focus:outline-none focus:ring-1 focus:ring-textgreen rounded-sm text-white placeholder-white lg:text-sm md:text-xs text-xxs">
               <input
                 type={showPassword ? "text" : "password"}
@@ -83,17 +93,21 @@ const LoginPage = () => {
               <span
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={(e) => {
-                  e.preventDefault(); 
+                  e.preventDefault();
                   setShowPassword((prev) => !prev);
                 }}
                 className="cursor-pointer text-textgreen ml-2"
               >
-                {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                {showPassword ? (
+                  <AiOutlineEyeInvisible size={20} />
+                ) : (
+                  <AiOutlineEye size={20} />
+                )}
               </span>
             </div>
-            
+
             <div>
-            <h1 className="mt-2 mb-2 text-buttongreen font-syke-medium lg:text-sm md:text-xs text-xxs">
+              <h1 className="mt-2 mb-2 text-buttongreen font-syke-medium lg:text-sm md:text-xs text-xxs">
                 Please remember your password!
                 <br />
                 Store it somewhere safe.
@@ -111,6 +125,9 @@ const LoginPage = () => {
                 "Login"
               )}
             </button>
+
+            {/* Error Message */}
+            {error && <p className="text-red-500 mt-2">{error}</p>}
           </form>
         </div>
 

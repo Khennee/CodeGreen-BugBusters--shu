@@ -50,8 +50,11 @@ FailState.play = async ({ canvasElement }: { canvasElement: HTMLElement }) => {
   const passwordInput = canvas.getByPlaceholderText("Enter your password");
   const loginButton = canvas.getByTestId("login-button");
 
-  await userEvent.type(emailInput, 'testforfail@gmail.com');
+  await userEvent.type(emailInput, 'testforfailgmail.com');
   await userEvent.type(passwordInput, 'thereisno@sign');
   await userEvent.click(loginButton);
-  await expect(canvas.getByText("Please match the requested format")).toBeInTheDocument();
+  await expect(
+    await canvas.findByText("Something went wrong, Please Try Again."),
+  ).toBeInTheDocument();
+
 };
