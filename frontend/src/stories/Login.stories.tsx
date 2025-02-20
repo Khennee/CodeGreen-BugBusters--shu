@@ -2,8 +2,8 @@ import { expect } from "@storybook/test";
 import { Meta } from "@storybook/react";
 import LoginPage from "../pages/LoginPage";
 import { BrowserRouter } from "react-router-dom";
-import { userEvent, within } from '@storybook/testing-library';
-//ayawan ko debug men HAAHHAHA
+import { userEvent, within, screen, waitFor } from '@storybook/testing-library';
+
 export default {
   title: "Pages/LoginPage",
   component: LoginPage,
@@ -39,6 +39,10 @@ SuccessState.play = async ({ canvasElement }: { canvasElement: HTMLElement }) =>
   await userEvent.type(passwordInput, 'success');
   await userEvent.click(loginButton);
 
+  await waitFor(() => {
+    expect(screen.getByText(/login successful/i)).toBeInTheDocument();
+  });
+
   await expect(loginButton).toBeEnabled();
 };
 
@@ -50,8 +54,11 @@ FailState.play = async ({ canvasElement }: { canvasElement: HTMLElement }) => {
   const passwordInput = canvas.getByPlaceholderText("Enter your password");
   const loginButton = canvas.getByTestId("login-button");
 
-  await userEvent.type(emailInput, 'testforfail@gmail.com');
+  await userEvent.type(emailInput, 'testforfailgmail.com'); 
   await userEvent.type(passwordInput, 'thereisno@sign');
   await userEvent.click(loginButton);
-  await expect(canvas.getByText("Please match the requested format")).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(screen.getByText(/please match the requested format/i)).toBeInTheDocument();
+  });
 };
